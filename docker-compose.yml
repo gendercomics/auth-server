@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATA_DIR: ${MYSQL_DATA_DIR}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ${MYSQL_DATA_DIR}:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  keycloak:
+    image: jboss/keycloak:6.0.1
+    container_name: keycloak
+    restart: unless-stopped
+    environment:
+      DB_VENDOR: MYSQL
+      DB_ADDR: mysql
+      DB_DATABASE: keycloak
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      KEYCLOAK_USER: ${KEYCLOAK_USER}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+    ports:
+      - 9090:8080
+    depends_on:
+      - mysql
