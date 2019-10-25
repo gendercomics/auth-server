@@ -1,0 +1,23 @@
+if: branch = master
+
+install: skip
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_5b7dc4d89bae_key -iv $encrypted_5b7dc4d89bae_iv -in deploy-key.enc -out deploy-key -d
+
+addons:
+  ssh_known_hosts: sso.gendercomics.net
+
+script:
+  - eval "$(ssh-agent -s)"
+  - chmod 600 deploy-key
+  - ssh-add deploy-key
+  - scp -r . deploy@sso.gendercomics.net:/var/gendercomics/auth-server
+  - ssh deploy@sso.gendercomics.net 'cd /var/gendercomics/auth-server && docker-compose up -d --remove-orphans'
+
+notifications:
+  slack:
+    rooms:
+      - visualitiesofgender:3zAI6z6JJXLeEIaBU49O0Wkr#datenbank
+    on_success: change # default: always
+    on_failure: always # default: always
