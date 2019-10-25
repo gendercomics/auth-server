@@ -1,5 +1,3 @@
-if: branch = master
-
 install: skip
 
 before_install:
