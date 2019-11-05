@@ -4,7 +4,7 @@ addons:
   ssh_known_hosts: sso.gendercomics.net
 
 before_script:
-  - openssl aes-256-cbc -K $encrypted_ac25a508ad54_key -iv $encrypted_ac25a508ad54_iv -in deploy-key.enc -out deploy-key -d
+  - openssl aes-256-cbc -K $encrypted_e6f540b719cc_key -iv $encrypted_e6f540b719cc_iv -in deploy-key.enc -out deploy-key -d
   - eval "$(ssh-agent -s)"
   - chmod 600 deploy-key
   - ssh-add deploy-key
@@ -16,6 +16,6 @@ script:
 notifications:
   slack:
     rooms:
-      - visualitiesofgender:3zAI6z6JJXLeEIaBU49O0Wkr#datenbank
-    on_success: change # default: always
-    on_failure: always # default: always
+    - visualitiesofgender:3zAI6z6JJXLeEIaBU49O0Wkr#datenbank
+    on_success: change
+    on_failure: always
