@@ -1,15 +1,15 @@
 install: skip
 
-before_install:
-  - openssl aes-256-cbc -K $encrypted_5b7dc4d89bae_key -iv $encrypted_5b7dc4d89bae_iv -in deploy-key.enc -out deploy-key -d
-
 addons:
   ssh_known_hosts: sso.gendercomics.net
 
-script:
+before_script:
+  - openssl aes-256-cbc -K $encrypted_ac25a508ad54_key -iv $encrypted_ac25a508ad54_iv -in deploy-key.enc -out deploy-key -d
   - eval "$(ssh-agent -s)"
   - chmod 600 deploy-key
   - ssh-add deploy-key
+
+script:
   - scp -r . deploy@sso.gendercomics.net:/var/gendercomics/auth-server
   - ssh deploy@sso.gendercomics.net 'cd /var/gendercomics/auth-server && docker-compose up -d --remove-orphans'
 
