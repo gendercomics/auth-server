@@ -14,7 +14,7 @@ before_script:
   - ssh-add deploy-key
 
 script:
-  - scp -r . deploy@sso.gendercomics.net:/var/gendercomics/auth-server
+  - scp -r gendercomics/auth-server deploy@sso.gendercomics.net:/var/gendercomics/auth-server
   - ssh deploy@sso.gendercomics.net 'cd /var/gendercomics/auth-server && docker-compose up -d --remove-orphans'
 
 notifications:
