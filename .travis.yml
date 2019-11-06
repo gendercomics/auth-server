@@ -14,7 +14,7 @@ before_script:
   - ssh-add deploy-key
 
 script:
-  - scp -r $TRAVIS_BUILD_DIR deploy@sso.gendercomics.net:/var/gendercomics/auth-server
+  - scp -r $TRAVIS_BUILD_DIR deploy@sso.gendercomics.net:/var/gendercomics/
   - ssh deploy@sso.gendercomics.net 'cd /var/gendercomics/auth-server && docker-compose up -d --remove-orphans'
 
 notifications:
