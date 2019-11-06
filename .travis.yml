@@ -17,6 +17,9 @@ script:
   - rsync -r --delete-after --quiet --exclude='.*' $TRAVIS_BUILD_DIR deploy@sso.gendercomics.net:/var/gendercomics/
   - ssh deploy@sso.gendercomics.net 'cd /var/gendercomics/auth-server && docker-compose up -d --remove-orphans'
 
+after_deploy:
+  - ssh deploy@sso.gendercomics.net 'cd /var/gendercomics/auth-server && rm deploy-key'
+
 notifications:
   slack:
     rooms:
