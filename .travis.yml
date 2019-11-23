@@ -7,18 +7,15 @@ env:
 addons:
   ssh_known_hosts: sso.gendercomics.net
 
-before_deploy:
+before_script:
   - openssl aes-256-cbc -K $encrypted_e6f540b719cc_key -iv $encrypted_e6f540b719cc_iv -in deploy-key.enc -out deploy-key -d
   - eval "$(ssh-agent -s)"
   - chmod 600 deploy-key
   - ssh-add deploy-key
 
-deploy:
-  provider: script
-  skip_cleanup: true
-  script: rsync -r --exclude='.*' --exclude='deploy-key' $TRAVIS_BUILD_DIR deploy@sso.gendercomics.net:/var/gendercomics/ && ssh deploy@sso.gendercomics.net 'cd /var/gendercomics/auth-server && docker-compose up -d --remove-orphans'
-  on:
-    branch: master
+script:
+  - rsync -r --exclude='.*' -- exclude='deploy-key' $TRAVIS_BUILD_DIR deploy@sso.gendercomics.net:/var/gendercomics/
+  - ssh deploy@sso.gendercomics.net 'cd /var/gendercomics/auth-server && docker-compose up -d --remove-orphans'
 
 after_deploy:
   - ssh deploy@sso.gendercomics.net 'cd /var/gendercomics/auth-server && rm deploy-key'
@@ -26,6 +23,6 @@ after_deploy:
 notifications:
   slack:
     rooms:
-    - visualitiesofgender:3zAI6z6JJXLeEIaBU49O0Wkr#datenbank
+      - visualitiesofgender:3zAI6z6JJXLeEIaBU49O0Wkr#datenbank
     on_success: change
     on_failure: always
