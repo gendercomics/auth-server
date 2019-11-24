@@ -69,6 +69,7 @@ services:
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
     networks:
       - keycloak
+      - proxy
     ports:
       - 9090:8080
     depends_on:
@@ -82,3 +83,4 @@ volumes:
 
 networks:
   keycloak:
+  proxy:
