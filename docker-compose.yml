@@ -77,5 +77,8 @@ services:
       - traefik.frontend.rule=Host:${HOST}
       - traefik.port=9090
 
+volumes:
+  portainer_data:
+
 networks:
   keycloak:
