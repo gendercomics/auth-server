@@ -2,6 +2,42 @@ version: '3'
 
 services:
 
+  portainer:
+    image: portainer/portainer:1.22.2
+    environment:
+      - HOST
+    container_name: portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    labels:
+      - traefik.frontend.rule=Host:${HOST}/portainer
+      - traefik.port=9000
+    networks:
+      - proxy
+
+  traefik:
+    image: traefik:1.7.18
+    container_name: traefik
+    environment:
+      - HOST
+    command: --docker --docker.domain=${HOST}/docker
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik_${HOST}.toml:/traefik.toml
+      - ./acme.json:/acme.json
+    labels:
+      - traefik.frontend.rule=Host:${HOST}/traefik
+      - traefik.port=8080
+    restart: always
+
   mysql:
     image: mysql:5.7
     container_name: mysql
@@ -37,6 +73,9 @@ services:
       - 9090:8080
     depends_on:
       - mysql
+    labels:
+      - traefik.frontend.rule=Host:${HOST}
+      - traefik.port=9090
 
 networks:
   keycloak:
