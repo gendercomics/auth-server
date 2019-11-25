@@ -31,8 +31,8 @@ services:
       - proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${PWD}/traefik_${HOST}.toml:/traefik.toml
-      - ${PWD}/acme.json:/acme.json
+      - ./traefik_${HOST}.toml:/traefik.toml
+      - traefik_data:/etc/traefik/acme
     labels:
       - traefik.frontend.rule=Host:${HOST}/traefik
       - traefik.port=8080
@@ -80,6 +80,7 @@ services:
 
 volumes:
   portainer_data:
+  traefik_data:
 
 networks:
   keycloak:
