@@ -71,7 +71,7 @@ services:
       - keycloak
       - proxy
     ports:
-      - 9090:8080
+      - 9090:9090
     depends_on:
       - mysql
     labels:
@@ -84,3 +84,4 @@ volumes:
 networks:
   keycloak:
   proxy:
+    external: true
