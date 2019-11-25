@@ -23,7 +23,7 @@ services:
     container_name: traefik
     environment:
       - HOST
-    command: --docker --docker.domain=${HOST}/docker
+    command: --docker --docker.domain=${HOST}
     ports:
       - 80:80
       - 443:443
