@@ -13,7 +13,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
     labels:
-      - traefik.frontend.rule=Host:${HOST}/portainer
+      - traefik.frontend.rule=Host:portainer-sso.${HOST}
       - traefik.port=9000
     networks:
       - proxy
@@ -23,7 +23,7 @@ services:
     container_name: traefik
     environment:
       - HOST
-    command: --docker --docker.domain=${HOST}
+    command: --docker --docker.domain=docker-sso.${HOST}
     ports:
       - 80:80
       - 443:443
@@ -34,7 +34,7 @@ services:
       - /var/gendercomics/auth-server/traefik_${HOST}.toml:/traefik.toml
       - /var/gendercomics/auth-server/acme.json:/acme.json
     labels:
-      - traefik.frontend.rule=Host:${HOST}/traefik
+      - traefik.frontend.rule=Host:traefik-sso.${HOST}
       - traefik.port=8080
     restart: always
 

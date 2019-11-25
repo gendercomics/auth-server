@@ -27,7 +27,7 @@ onHostRule = true
 
 [docker]
 endpoint = "unix:///var/run/docker.sock"
-domain = "sso.gendercomics.net"
+domain = "docker-sso.gendercomics.net"
 watch = true
 exposedByDefault = false
 network = "proxy"
