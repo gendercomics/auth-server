@@ -51,7 +51,7 @@ services:
     volumes:
       - ${MYSQL_DATA_DIR}:/var/lib/mysql
     networks:
-      - keycloak
+      - proxy
     ports:
       - 3306:3306
 
@@ -68,7 +68,6 @@ services:
       KEYCLOAK_USER: ${KEYCLOAK_USER}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
     networks:
-      - keycloak
       - proxy
     ports:
       - 9090:9090
@@ -82,6 +81,5 @@ volumes:
   portainer_data:
 
 networks:
-  keycloak:
   proxy:
     external: true
