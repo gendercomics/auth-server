@@ -42,8 +42,8 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /var/gendercomics/auth-service/traefik.yml:/traefik.yml:ro
-      - /var/gendercomics/auth-service/acme.json:/acme.json
+      - /var/gendercomics/auth-server/traefik.yml:/traefik.yml:ro
+      - /var/gendercomics/auth-server/acme.json:/acme.json
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.entrypoints=http"
