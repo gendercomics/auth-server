@@ -74,7 +74,7 @@ services:
     depends_on:
       - mysql
     labels:
-      - traefik.frontend.rule=Host:${HOST}
+      - traefik.frontend.rule=Host:sso.${HOST}
       - traefik.port=9090
 
 volumes:
