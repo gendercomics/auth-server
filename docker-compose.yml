@@ -4,59 +4,18 @@ services:
 
   portainer:
     image: portainer/portainer:1.22.2
-    container_name: portainer
+    container_name: portainer-sso
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     networks:
-      - proxy
+      - keycloak
+    ports:
+      - 9000:9000
     volumes:
-      - /etc/localtime:/etc/localtime:ro
+      #- /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - portainer_data:/data
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portainer.entrypoints=http"
-      - "traefik.http.routers.portainer.rule=Path(`/portainer`)"
-      - "traefik.http.middlewares.portainer-https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.portainer.middlewares=portainer-https-redirect"
-      - "traefik.http.routers.portainer-secure.entrypoints=https"
-      - "traefik.http.routers.portainer-secure.rule=Path(`/portainer`)"
-      - "traefik.http.routers.portainer-secure.tls=true"
-      - "traefik.http.routers.portainer-secure.tls.certresolver=http"
-      - "traefik.http.routers.portainer-secure.service=portainer"
-      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
-      - "traefik.docker.network=proxy"
-
-  traefik:
-    image: traefik:2.1
-    container_name: traefik-sso
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    networks:
-      - proxy
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /var/gendercomics/auth-server/traefik.yml:/traefik.yml:ro
-      - /var/gendercomics/auth-server/acme.json:/acme.json
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik.entrypoints=http"
-      - "traefik.http.routers.traefik.rule=Path(`/traefik`)"
-      - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:$$2y$$05$$l8MakcMMD9YzfANSNKxbOe9JUG6bSSKBOUdHe42DtEIt2/X6aq5Ai"
-      - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
-      - "traefik.http.routers.traefik-secure.entrypoints=https"
-      - "traefik.http.routers.traefik-secure.rule=Path(`/traefik`)"
-      - "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
-      - "traefik.http.routers.traefik-secure.tls=true"
-      - "traefik.http.routers.traefik-secure.tls.certresolver=http"
-      - "traefik.http.routers.traefik-secure.service=api@internal"
 
   mysql:
     image: mysql:5.7
@@ -71,9 +30,7 @@ services:
     volumes:
       - ${MYSQL_DATA_DIR}:/var/lib/mysql
     networks:
-      - proxy
-    ports:
-      - 3306:3306
+      - keycloak
 
   keycloak:
     image: jboss/keycloak:7.0.0
@@ -88,28 +45,15 @@ services:
       KEYCLOAK_USER: ${KEYCLOAK_USER}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
     networks:
-      - proxy
+      - keycloak
     ports:
-      - 9090:9090
+      - 80:8080
+      - 443:8443
     depends_on:
       - mysql
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portainer.entrypoints=http"
-      - "traefik.http.routers.portainer.rule=Host(`sso.gendercomics.net`)"
-      - "traefik.http.middlewares.portainer-https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.portainer.middlewares=keycloak-https-redirect"
-      - "traefik.http.routers.portainer-secure.entrypoints=https"
-      - "traefik.http.routers.portainer-secure.rule=Host(`sso.gendercomics.net`)"
-      - "traefik.http.routers.portainer-secure.tls=true"
-      - "traefik.http.routers.portainer-secure.tls.certresolver=http"
-      - "traefik.http.routers.portainer-secure.service=keycloak"
-      - "traefik.http.services.portainer.loadbalancer.server.port=9090"
-      - "traefik.docker.network=proxy"
 
 volumes:
   portainer_data:
 
 networks:
-  proxy:
-    external: true
+  keycloak:
