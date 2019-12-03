@@ -44,6 +44,8 @@ services:
       DB_PASSWORD: ${MYSQL_PASSWORD}
       KEYCLOAK_USER: ${KEYCLOAK_USER}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+    volumes:
+      - /var/gendercomics/auth-server/cert:/etc/x509/https
     networks:
       - keycloak
     ports:
