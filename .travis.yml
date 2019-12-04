@@ -1,0 +1,28 @@
+install: skip
+
+env:
+  global:
+    secure: uViGCVHntx5m3hvKniTRNrbcMPQf83pwd81j8vU45tj57hvghpTv8uEurizaO/5Rr424XyKodScsmdbMTQ/zSU2cQUmpn/FO9EncixcWijYMLDQXka2DKmFG1sqoBOpAQ91rdX3t1w0ZpM6UNwkEz4PM6kaqxECKJqjqyXyro/EeE/6NsVr+uyjsYvQCfLZWban5wkbVU+N1N4cmIf6kLVoj/yYTd9xXjAfdZDf4uUh0SMPV0QyMarVsHRi3ojLfvHyLIh9dsxnPapM5weHrNbkDoyvn71dXlm4Cz1UL5v1uKQNQv6P6mQHpFTFdA7zO4fu2yEY8J5ckCjhNSXmjlYIYxfgWu8Wlq/YoNqrZOEa8TPp8hWJf74Wztfsj0iqEflWd19KVl5XhQR9lmm3W2L2ef2/Ebg2uxTwZKDapoX4v88DzcZc2fsY9bpCE6hCtvmR44aAobA7Kphyn4EzMiAfrZKJTJeQ09apjM8EJy6GKwNmv3G13eZ32RpeZkO8FDlAqgMA6HCeYrJMusHtJvItsq6peQ2P06QCDOsVVhA35h8q8EAXBENec0GZcCgspT83RT4aBk+7D4mn/KYguy/hQ24VOJi0/+QD+J12adta8eFxu4hx6eXqxslCehuAfKVRsRWQNy6+Xixo10FPgICHfRqMdeIMdMHWN+J5IXSY=
+
+addons:
+  ssh_known_hosts: sso.gendercomics.net
+
+before_script:
+  - openssl aes-256-cbc -K $encrypted_e6f540b719cc_key -iv $encrypted_e6f540b719cc_iv -in deploy-key.enc -out deploy-key -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 deploy-key
+  - ssh-add deploy-key
+
+script:
+  - rsync -r --exclude='.*' $TRAVIS_BUILD_DIR deploy@sso.gendercomics.net:/var/gendercomics
+  - ssh deploy@sso.gendercomics.net 'cd /var/gendercomics/auth-server && docker-compose up -d --remove-orphans'
+
+after_deploy:
+  - ssh deploy@sso.gendercomics.net 'cd /var/gendercomics/auth-server && rm deploy-key'
+
+notifications:
+  slack:
+    rooms:
+      - visualitiesofgender:3zAI6z6JJXLeEIaBU49O0Wkr#datenbank
+    on_success: change
+    on_failure: always

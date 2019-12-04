@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+
+  portainer:
+    image: portainer/portainer:1.22.2
+    container_name: portainer-sso
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - keycloak
+    ports:
+      - 8443:9000
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - portainer_data:/data
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATA_DIR: ${MYSQL_DATA_DIR}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ${MYSQL_DATA_DIR}:/var/lib/mysql
+    networks:
+      - keycloak
+
+  keycloak:
+    image: jboss/keycloak:7.0.0
+    container_name: keycloak
+    restart: unless-stopped
+    environment:
+      DB_VENDOR: MYSQL
+      DB_ADDR: mysql
+      DB_DATABASE: keycloak
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      KEYCLOAK_USER: ${KEYCLOAK_USER}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+    volumes:
+      - /var/gendercomics/auth-server/cert:/etc/x509/https
+    networks:
+      - keycloak
+    ports:
+      - 443:8443
+    depends_on:
+      - mysql
+
+volumes:
+  portainer_data:
+
+networks:
+  keycloak:
