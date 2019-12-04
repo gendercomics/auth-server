@@ -11,9 +11,9 @@ services:
     networks:
       - keycloak
     ports:
-      - 9000:9000
+      - 8443:9000
     volumes:
-      #- /etc/localtime:/etc/localtime:ro
+      - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - portainer_data:/data
 
@@ -49,7 +49,6 @@ services:
     networks:
       - keycloak
     ports:
-      - 80:8080
       - 443:8443
     depends_on:
       - mysql
