@@ -33,7 +33,7 @@ services:
       - keycloak
 
   keycloak:
-    image: jboss/keycloak:7.0.1
+    image: jboss/keycloak:7.0.0
     container_name: keycloak
     restart: unless-stopped
     environment:
