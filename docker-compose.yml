@@ -5,7 +5,7 @@ services:
   portainer:
     image: portainer/portainer:1.22.2
     container_name: portainer-sso
-    restart: unless-stopped
+    restart: always
     security_opt:
       - no-new-privileges:true
     networks:
