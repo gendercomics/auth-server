@@ -74,7 +74,7 @@ services:
       - mysql
     labels:
       - traefik.frontend.rule=Host:${HOST}
-      - traefik.port=8080
+      - traefik.port=8443
 
 volumes:
   portainer_data:
