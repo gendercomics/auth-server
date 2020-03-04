@@ -2,20 +2,41 @@ version: '3'
 
 services:
 
+  traefik:
+    image: traefik:1.7.21
+    container_name: traefik
+    environment:
+      - HOST
+    command: --docker --docker.domain=docker.${HOST}
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik_sso.${HOST}.toml:/traefik.toml
+      - ./acme.json:/acme.json
+    labels:
+      - traefik.frontend.rule=Host:traefik-sso.${HOST}
+      - traefik.port=8080
+    restart: always
+
   portainer:
-    image: portainer/portainer:1.23.0
+    image: portainer/portainer:1.23.1
     container_name: portainer-sso
     restart: always
     security_opt:
       - no-new-privileges:true
     networks:
-      - keycloak
-    ports:
-      - 8443:9000
+      - proxy
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - portainer_data:/data
+    labels:
+      - traefik.frontend.rule=Host:portainer-sso.${HOST}
+      - traefik.port=9000
 
   mysql:
     image: mysql:5.7
@@ -31,6 +52,8 @@ services:
       - ${MYSQL_DATA_DIR}:/var/lib/mysql
     networks:
       - keycloak
+    labels:
+      - traefik.enable=false
 
   keycloak:
     image: jboss/keycloak:7.0.0
@@ -44,17 +67,19 @@ services:
       DB_PASSWORD: ${MYSQL_PASSWORD}
       KEYCLOAK_USER: ${KEYCLOAK_USER}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
-    volumes:
-      - /var/gendercomics/auth-server/cert:/etc/x509/https
     networks:
       - keycloak
-    ports:
-      - 443:8443
+      - proxy
     depends_on:
       - mysql
+    labels:
+      - traefik.frontend.rule=Host:sso.${HOST}
+      - traefik.port=8443
 
 volumes:
   portainer_data:
 
 networks:
   keycloak:
+  proxy:
+    external: true
