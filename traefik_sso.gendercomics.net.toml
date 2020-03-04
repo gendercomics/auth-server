@@ -30,6 +30,6 @@ onHostRule = true
   entryPoint = "http"
 
 [docker]
-domain = "docker.gendercomics.net"
+domain = "docker-sso.gendercomics.net"
 watch = true
 network = "proxy"

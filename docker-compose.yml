@@ -7,7 +7,7 @@ services:
     container_name: traefik
     environment:
       - HOST
-    command: --docker --docker.domain=docker.${HOST}
+    command: --docker --docker.domain=docker-${HOST}
     ports:
       - 80:80
       - 443:443
@@ -15,10 +15,10 @@ services:
       - proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik_sso.${HOST}.toml:/traefik.toml
+      - ./traefik_${HOST}.toml:/traefik.toml
       - ./acme.json:/acme.json
     labels:
-      - traefik.frontend.rule=Host:traefik-sso.${HOST}
+      - traefik.frontend.rule=Host:traefik-${HOST}
       - traefik.port=8080
     restart: always
 
@@ -35,7 +35,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - portainer_data:/data
     labels:
-      - traefik.frontend.rule=Host:portainer-sso.${HOST}
+      - traefik.frontend.rule=Host:portainer-${HOST}
       - traefik.port=9000
 
   mysql:
@@ -73,7 +73,7 @@ services:
     depends_on:
       - mysql
     labels:
-      - traefik.frontend.rule=Host:sso.${HOST}
+      - traefik.frontend.rule=Host:${HOST}
       - traefik.port=8443
 
 volumes:
