@@ -67,7 +67,7 @@ services:
       DB_PASSWORD: ${MYSQL_PASSWORD}
       KEYCLOAK_USER: ${KEYCLOAK_USER}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
-      PROXY_ADDRESS_FORWARDING: true
+      PROXY_ADDRESS_FORWARDING: 'true'
     networks:
       - keycloak
       - proxy
