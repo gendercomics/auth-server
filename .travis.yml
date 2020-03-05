@@ -23,6 +23,6 @@ after_deploy:
 notifications:
   slack:
     rooms:
-      - visualitiesofgender:3zAI6z6JJXLeEIaBU49O0Wkr#datenbank
+      - visualitiesofgender:3zAI6z6JJXLeEIaBU49O0Wkr#builds
     on_success: change
     on_failure: always
