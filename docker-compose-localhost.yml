@@ -1,14 +1,11 @@
-version: '3'
-
 services:
 
   mysql:
-    image: library/mysql:8.0.22
+    image: mysql:8.0
     container_name: mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATA_DIR: ${MYSQL_DATA_DIR}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -18,26 +15,23 @@ services:
       - keycloak
 
   keycloak:
-    image: jboss/keycloak:11.0.3
+    image: quay.io/keycloak/keycloak:26.2
     container_name: keycloak
     restart: unless-stopped
+    command: start-dev
     environment:
-      DB_VENDOR: MYSQL
-      DB_ADDR: mysql
-      DB_DATABASE: keycloak
-      DB_USER: ${MYSQL_USER}
-      DB_PASSWORD: ${MYSQL_PASSWORD}
-      KEYCLOAK_USER: ${KEYCLOAK_USER}
-      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+      KC_DB: mysql
+      KC_DB_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}
+      KC_DB_USERNAME: ${MYSQL_USER}
+      KC_DB_PASSWORD: ${MYSQL_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
     networks:
       - keycloak
     ports:
       - 81:8080
     depends_on:
       - mysql
-
-volumes:
-  portainer_data:
 
 networks:
   keycloak:
