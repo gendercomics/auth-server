@@ -11,8 +11,12 @@ log "Creating external networks..."
 docker network create proxy 2>/dev/null && log "  proxy: created" || log "  proxy: already exists"
 echo ""
 
-log "Starting auth-server (traefik + portainer + mysql + keycloak)..."
-docker compose -f "$BASE_DIR/docker-compose.yml" up -d
+log "Starting infra stack (traefik + portainer)..."
+docker compose -p auth-infra -f "$BASE_DIR/docker-compose.infra.yml" up -d
+echo ""
+
+log "Starting app stack (mysql + keycloak)..."
+docker compose -p auth-app -f "$BASE_DIR/docker-compose.yml" up -d
 
 echo ""
 log "=== All services started ==="

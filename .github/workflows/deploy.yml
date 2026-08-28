@@ -25,6 +25,8 @@ jobs:
 
           scp: |
             ./docker-compose.yml ${{ secrets.DEPLOY_USER }}@${{ secrets.APP_HOST }}:/var/gendercomics/auth-server/docker-compose.yml
+            ./docker-compose.infra.yml ${{ secrets.DEPLOY_USER }}@${{ secrets.APP_HOST }}:/var/gendercomics/auth-server/docker-compose.infra.yml
+            ./traefik.yml ${{ secrets.DEPLOY_USER }}@${{ secrets.APP_HOST }}:/var/gendercomics/auth-server/traefik.yml
             ./setup.sh ${{ secrets.DEPLOY_USER }}@${{ secrets.APP_HOST }}:/var/gendercomics/auth-server/setup.sh
             ./cleanup.sh ${{ secrets.DEPLOY_USER }}@${{ secrets.APP_HOST }}:/var/gendercomics/auth-server/cleanup.sh
 
