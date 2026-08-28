@@ -1,4 +1,4 @@
-# copy scripts to digitalocean and run docker-compose
+#push copy scripts to digitalocean and run docker-compose
 
 name: deploy
 
